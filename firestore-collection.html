@@ -1,0 +1,41 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="firestore-mixin.html">
+
+<dom-module id="firestore-collection">
+  <script>
+    class FirestoreCollection extends FirestoreMixin(Polymer.Element) {
+
+      static get is() {
+        return 'firestore-collection';
+      }
+
+      static get properties() {
+        return {
+
+        }
+      }
+
+      static get observers() {
+        return [
+          '_toggleListen(app, collection)',
+        ]
+      }
+
+      _toggleListen(app, collection) {
+        var db = firebase.firestore();
+        firebase.firestore().settings({timestampsInSnapshots: this.timestampsInSnapshots});
+        this._setRef(db.collection(collection));
+      }
+
+      _handleSnapshot(snapshot) {
+        // console.info('_handleSnapshot', snapshot)
+        let data = [];
+        snapshot.forEach((doc) => { data.push(doc.data()); });
+        this.set('data', data);
+      }
+
+    }
+
+    window.customElements.define(FirestoreCollection.is, FirestoreCollection);
+  </script>
+</dom-module>

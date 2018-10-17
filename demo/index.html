@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>firebase-components demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+
+    <link rel="import" href="../../polymer/lib/elements/dom-bind.html">
+    <link rel="import" href="../../polymer/lib/elements/dom-repeat.html">
+    <link rel="import" href="../firebase-components.html">
+
+  </head>
+  <body>
+
+    <dom-bind id="demo">
+      <template>
+
+        <firebase-app
+          project-id="my-project-id"
+          api-key="my-api-key"
+          auth-domain="my-auth-domain"
+          app="{{app}}"
+        ></firebase-app>
+
+        <firebase-auth
+          app="[[app]]"
+        ></firebase-auth>
+
+        <firestore-document
+          app="[[app]]"
+          timestamps-in-snapshots
+          collection="my-collection-name"
+          document-id="my-document-id"
+          data="{{data}}"
+        ></firestore-document>
+
+        <firestore-collection
+          app="[[app]]"
+          timestamps-in-snapshots
+          collection="contacts"
+          data="{{contacts}}"
+        ></firestore-collection>
+
+        <h3>Single Contact</h3>
+        <input type="text" value="{{data.first::input}}">
+
+        <h3>Contacts</h3>
+
+        <dom-repeat items="[[contacts]]" as="contact">
+          <template>
+            <input type="text" value="{{contact.first::input}}"><br>
+          </template>
+        </dom-repeat>
+
+      </template>
+    </dom-bind>
+
+  </body>
+</html>

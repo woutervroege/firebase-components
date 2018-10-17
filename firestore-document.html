@@ -1,0 +1,51 @@
+<<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="firestore-mixin.html">
+
+<dom-module id="firestore-document">
+  <script>
+    class FirestoreDocument extends FirestoreMixin(Polymer.Element) {
+
+      static get is() {
+        return 'firestore-document';
+      }
+
+      static get properties() {
+        return {
+
+          documentId: {
+            type: String,
+            value: null
+          },
+
+        }
+      }
+
+      static get observers() {
+        return [
+          '_toggleListen(app, collection, documentId)',
+          '_dataChanged(data.*)'
+        ]
+      }
+
+      _toggleListen(app, collection, documentId) {
+        var db = firebase.firestore();
+        db.settings({timestampsInSnapshots: this.timestampsInSnapshots});
+        this._setRef(db.collection(collection).doc(documentId));
+      }
+
+      _handleSnapshot(snapshot) {
+        let data = snapshot.data();
+        if(!data) return;
+        this.set('data', data);
+      }
+
+      _dataChanged(dataChange) {
+        //console.info('_dataChanged', dataChange.base);
+        this.ref.set(dataChange.base, { merge: true });
+      }
+
+    }
+
+    window.customElements.define(FirestoreDocument.is, FirestoreDocument);
+  </script>
+</dom-module>
