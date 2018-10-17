@@ -1,6 +1,7 @@
 <script>
   FirestoreMixin = function(superClass) {
     return class extends superClass {
+
       constructor() {
         super();
       }
@@ -33,7 +34,7 @@
 
           ref: {
             type: Object,
-            readOnly: true,
+            readOnly: true
           },
 
           unsubscribe: {
@@ -42,6 +43,11 @@
           },
 
           disabled: {
+            type: Boolean,
+            value: false,
+          },
+
+          _fetchedFromRemote: {
             type: Boolean,
             value: false,
           }

@@ -15,7 +15,7 @@
   </head>
   <body>
 
-    <dom-bind id="demo">
+    <dom-bind id="demo" data="[[data]]">
       <template>
 
         <firebase-app
@@ -32,7 +32,7 @@
         <firestore-document
           app="[[app]]"
           timestamps-in-snapshots
-          collection="my-collection-name"
+          collection="contacts"
           document-id="my-document-id"
           data="{{data}}"
         ></firestore-document>
@@ -42,18 +42,37 @@
           timestamps-in-snapshots
           collection="contacts"
           data="{{contacts}}"
+          where="[[where]]"
+          limit="3"
         ></firestore-collection>
 
-        <h3>Single Contact</h3>
-        <input type="text" value="{{data.first::input}}">
+        <h3>#my-document-id</h3>
+        <input type="text" value="{{data.first::change}}">
 
         <h3>Contacts</h3>
+        <input type="text" placeholder="search first name" id="searchFirst">
+        <input type="text" placeholder="search last name" id="searchLast">
 
+        <uL>
         <dom-repeat items="[[contacts]]" as="contact">
           <template>
-            <input type="text" value="{{contact.first::input}}"><br>
+            <li>[[contact.first]] <strong>[[contact.last]]</strong></li>
           </template>
         </dom-repeat>
+        </uL>
+
+        <script>
+          demo.data = {"first": "Wouter"};
+          searchFirst.addEventListener('change', search)
+          searchLast.addEventListener('change', search)
+
+          function search() {
+            demo.set('where', [
+              ["first", "==", searchFirst.value],
+              ["last", "==", searchLast.value]
+            ]);
+          }
+        </script>
 
       </template>
     </dom-bind>

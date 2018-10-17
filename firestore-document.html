@@ -23,7 +23,8 @@
       static get observers() {
         return [
           '_toggleListen(app, collection, documentId)',
-          '_dataChanged(data.*)'
+          '_dataChanged(data.*)',
+          '_unsetFetchedOnce(disabled, documentId)'
         ]
       }
 
@@ -34,14 +35,21 @@
       }
 
       _handleSnapshot(snapshot) {
+        this._fetchedFromRemote = true;
         let data = snapshot.data();
+        // console.info('data', data);
         if(!data) return;
         this.set('data', data);
       }
 
       _dataChanged(dataChange) {
-        //console.info('_dataChanged', dataChange.base);
+        // console.info('_dataChanged', dataChange.base, this._fetchedFromRemote);
+        if(!this._fetchedFromRemote) return;
         this.ref.set(dataChange.base, { merge: true });
+      }
+
+      _unsetFetchedOnce(disabled, documentId) {
+        this._fetchedFromRemote = false;
       }
 
     }

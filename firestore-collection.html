@@ -11,24 +11,43 @@
 
       static get properties() {
         return {
-
+          
+          where: {
+            type: Array,
+            value: []
+          },
+          
+          order: {
+            type: Array,
+            value: []
+          },
+          
+          limit: {
+            type: Number,
+          },
         }
       }
 
       static get observers() {
         return [
-          '_toggleListen(app, collection)',
+          '_toggleListen(app, collection, where.*, order.*, limit)',
         ]
       }
 
       _toggleListen(app, collection) {
         var db = firebase.firestore();
         firebase.firestore().settings({timestampsInSnapshots: this.timestampsInSnapshots});
-        this._setRef(db.collection(collection));
+        var ref = db.collection(collection);
+        if(this.where) this.where.forEach((v)=> { if(v[0] && v[1] && v[2]) ref = ref.where(v[0], v[1], v[2])});
+        if(this.order) this.order.forEach((v)=> {ref = ref.order(v[0], v[1] || 'asc')});
+        if(this.limit) ref = ref.limit(this.limit);
+        this.unsubscribe && this.unsubscribe();
+        this._setRef(ref);
       }
 
       _handleSnapshot(snapshot) {
         // console.info('_handleSnapshot', snapshot)
+        this._fetchedFromRemote = true;
         let data = [];
         snapshot.forEach((doc) => { data.push(doc.data()); });
         this.set('data', data);
