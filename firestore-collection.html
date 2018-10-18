@@ -46,10 +46,15 @@
       }
 
       _handleSnapshot(snapshot) {
-        // console.info('_handleSnapshot', snapshot)
+        // console.info('_handleSnapshot', snapshot.docs)
         this._fetchedFromRemote = true;
         let data = [];
-        snapshot.forEach((doc) => { data.push(doc.data()); });
+        snapshot.forEach((doc) => {
+          data.push({
+            id: doc.id,
+            data: doc.data()
+          });
+        });
         this.set('data', data);
       }
 
