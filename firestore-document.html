@@ -29,6 +29,7 @@
       }
 
       _toggleListen(app, collection, documentId) {
+        if(!documentId) return;
         var db = firebase.firestore();
         db.settings({timestampsInSnapshots: this.timestampsInSnapshots});
         this._setRef(db.collection(collection).doc(documentId));
